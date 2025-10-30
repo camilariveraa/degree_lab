@@ -1,0 +1,785 @@
+{
+    "root": {
+        "brief": {
+            "stuff_code": "HgwJn",
+            "stuff_name": "brief",
+            "concept": {
+                "code": "Text",
+                "domain": "native",
+                "description": "A text",
+                "structure_class_name": "TextContent",
+                "refines": null
+            },
+            "content": {
+                "text": "Homework solver system: \n1. Input: A photo of homework (HomeworkPhoto concept that refines Image)\n2. First step: Use vision AI to extract all text from the photo, identify the subject area (math, science, history, etc.), list all questions or problems, and describe any diagrams or visual elements present\n3. Second step: Parse and structure each individual question from the extracted content, assigning question numbers, identifying subject, and estimating difficulty level\n4. Third step: For each question, provide a detailed step-by-step solution that includes: the reasoning for each step, all mathematical calculations shown, clear explanations in simple language, the final answer highlighted, additional concept explanation, and helpful tips to remember\n5. Fourth step: Compile everything into a final homework solutions document that includes: subject identification, total question count, all organized solutions, general study notes for the topic, and recommended learning resources like YouTube channels and websites\n6. Output: Complete homework solutions as a structured document"
+            }
+        },
+        "plan_draft": {
+            "stuff_code": "mjH2Q",
+            "stuff_name": "plan_draft",
+            "concept": {
+                "code": "PlanDraft",
+                "domain": "builder",
+                "description": "Natural-language pipeline plan text describing sequences, inputs, outputs.",
+                "structure_class_name": "TextContent",
+                "refines": null
+            },
+            "content": {
+                "text": "# Homework Solver Pipeline Plan\n\n## Initial Inputs\n- homework_photo\n\n## Pipeline Structure\n\n### SEQUENCE: Main homework solving flow\nUses: extract_homework_content, structure_questions, solve_all_questions, compile_final_document\n\n---\n\n**PIPE: extract_homework_content**\n- Uses LLM with vision capabilities to analyze the homework photo\n- Inputs: homework_photo\n- Extracts all visible text, identifies the subject area, lists all questions/problems, and describes diagrams or visual elements\n- Outputs structured object: homework_analysis\n- Structured output fields: extracted_text, subject_area, raw_questions_list, visual_elements_description\n\n---\n\n**PIPE: structure_questions**\n- Uses LLM to parse the extracted content into individual questions\n- Inputs: homework_analysis\n- Assigns question numbers, identifies subject for each, estimates difficulty level\n- Outputs structured list: structured_questions\n- Each item contains: question_number, question_text, subject, difficulty_level\n\n---\n\n**BATCH: solve_all_questions**\n- Applies solve_single_question pipe to each element of structured_questions\n- Transforms structured_questions list into solutions list\n\n**PIPE: solve_single_question**\n- Uses LLM to generate comprehensive solution for one question\n- Inputs: structured_question, subject_area\n- Provides step-by-step solution with reasoning, calculations, explanations, final answer, concept explanation, and helpful tips\n- Outputs structured object: question_solution\n- Structured output fields: question_number, step_by_step_reasoning, calculations, explanations, final_answer, concept_explanation, memory_tips\n\n---\n\n**PIPE: compile_final_document**\n- Uses LLM to create the complete homework solutions document\n- Inputs: subject_area, structured_questions, question_solution (all solutions from batch)\n- Compiles subject identification, total question count, organized solutions, general study notes, and recommended resources\n- Outputs structured object: homework_solutions_document\n- Structured output fields: subject, total_questions, organized_solutions, study_notes, recommended_resources"
+            }
+        },
+        "concept_drafts": {
+            "stuff_code": "BrVVe",
+            "stuff_name": "concept_drafts",
+            "concept": {
+                "code": "ConceptDrafts",
+                "domain": "builder",
+                "description": "Textual draft of the concepts to create.",
+                "structure_class_name": "TextContent",
+                "refines": null
+            },
+            "content": {
+                "text": "### Concept HomeworkPhoto\nrefines: Image\n\n### Concept HomeworkAnalysis\nStructured extraction of homework content from a photo\n\n**Fields:**\n- extracted_text\n  - description: All text content extracted from the homework photo\n  - type: text\n  - required: true\n- subject_area\n  - description: The academic subject area identified (e.g., math, science, history)\n  - type: text\n  - required: true\n- raw_questions_list\n  - description: List of all questions or problems found in the homework\n  - type: text\n  - required: true\n- visual_elements_description\n  - description: Description of any diagrams, charts, or visual elements present\n  - type: text\n\n### Concept StructuredQuestion\nA parsed individual question with metadata\n\n**Fields:**\n- question_number\n  - description: The assigned number or identifier for the question\n  - type: text\n  - required: true\n- question_text\n  - description: The full text of the question or problem\n  - type: text\n  - required: true\n- subject\n  - description: The subject area for this specific question\n  - type: text\n  - required: true\n- difficulty_level\n  - description: Estimated difficulty level of the question\n  - type: text\n  - required: true\n\n### Concept QuestionSolution\nComprehensive solution for a single question\n\n**Fields:**\n- question_number\n  - description: The question number this solution corresponds to\n  - type: text\n  - required: true\n- step_by_step_reasoning\n  - description: Detailed reasoning for each step of the solution\n  - type: text\n  - required: true\n- calculations\n  - description: All mathematical calculations shown\n  - type: text\n- explanations\n  - description: Clear explanations in simple language\n  - type: text\n  - required: true\n- final_answer\n  - description: The final answer to the question, highlighted\n  - type: text\n  - required: true\n- concept_explanation\n  - description: Additional explanation of underlying concepts\n  - type: text\n- memory_tips\n  - description: Helpful tips to remember the concept or approach\n  - type: text\n\n### Concept HomeworkSolutionsDocument\nComplete compiled homework solutions document\n\n**Fields:**\n- subject\n  - description: The primary subject area of the homework\n  - type: text\n  - required: true\n- total_questions\n  - description: Total count of questions solved\n  - type: integer\n  - required: true\n- organized_solutions\n  - description: All solutions organized and formatted\n  - type: text\n  - required: true\n- study_notes\n  - description: General study notes for the topic\n  - type: text\n- recommended_resources\n  - description: Recommended learning resources including YouTube channels and websites\n  - type: text"
+            }
+        },
+        "concept_specs": {
+            "stuff_code": "6EuEU",
+            "stuff_name": "concept_specs",
+            "concept": {
+                "code": "ConceptSpec",
+                "domain": "concept",
+                "description": "A specification for a concept including its code, description, and a structure draft as plain text.",
+                "structure_class_name": "ConceptSpec",
+                "refines": null
+            },
+            "content": {
+                "items": [
+                    {
+                        "the_concept_code": "HomeworkPhoto",
+                        "description": "A photo of homework content",
+                        "structure": null,
+                        "refines": "Image"
+                    },
+                    {
+                        "the_concept_code": "HomeworkAnalysis",
+                        "description": "Structured extraction of homework content from a photo",
+                        "structure": {
+                            "extracted_text": {
+                                "the_field_name": "extracted_text",
+                                "description": "All text content extracted from the homework photo",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "subject_area": {
+                                "the_field_name": "subject_area",
+                                "description": "The academic subject area identified (e.g., math, science, history)",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "raw_questions_list": {
+                                "the_field_name": "raw_questions_list",
+                                "description": "List of all questions or problems found in the homework",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "visual_elements_description": {
+                                "the_field_name": "visual_elements_description",
+                                "description": "Description of any diagrams, charts, or visual elements present",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    },
+                    {
+                        "the_concept_code": "StructuredQuestion",
+                        "description": "A parsed individual question with metadata",
+                        "structure": {
+                            "question_number": {
+                                "the_field_name": "question_number",
+                                "description": "The assigned number or identifier for the question",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "question_text": {
+                                "the_field_name": "question_text",
+                                "description": "The full text of the question or problem",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "subject": {
+                                "the_field_name": "subject",
+                                "description": "The subject area for this specific question",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "difficulty_level": {
+                                "the_field_name": "difficulty_level",
+                                "description": "Estimated difficulty level of the question",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    },
+                    {
+                        "the_concept_code": "QuestionSolution",
+                        "description": "Comprehensive solution for a single question",
+                        "structure": {
+                            "question_number": {
+                                "the_field_name": "question_number",
+                                "description": "The question number this solution corresponds to",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "step_by_step_reasoning": {
+                                "the_field_name": "step_by_step_reasoning",
+                                "description": "Detailed reasoning for each step of the solution",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "calculations": {
+                                "the_field_name": "calculations",
+                                "description": "All mathematical calculations shown",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            },
+                            "explanations": {
+                                "the_field_name": "explanations",
+                                "description": "Clear explanations in simple language",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "final_answer": {
+                                "the_field_name": "final_answer",
+                                "description": "The final answer to the question, highlighted",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "concept_explanation": {
+                                "the_field_name": "concept_explanation",
+                                "description": "Additional explanation of underlying concepts",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            },
+                            "memory_tips": {
+                                "the_field_name": "memory_tips",
+                                "description": "Helpful tips to remember the concept or approach",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    },
+                    {
+                        "the_concept_code": "HomeworkSolutionsDocument",
+                        "description": "Complete compiled homework solutions document",
+                        "structure": {
+                            "subject": {
+                                "the_field_name": "subject",
+                                "description": "The primary subject area of the homework",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "total_questions": {
+                                "the_field_name": "total_questions",
+                                "description": "Total count of questions solved",
+                                "type": "integer",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "organized_solutions": {
+                                "the_field_name": "organized_solutions",
+                                "description": "All solutions organized and formatted",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "study_notes": {
+                                "the_field_name": "study_notes",
+                                "description": "General study notes for the topic",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            },
+                            "recommended_resources": {
+                                "the_field_name": "recommended_resources",
+                                "description": "Recommended learning resources including YouTube channels and websites",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    }
+                ]
+            }
+        },
+        "flow_draft": {
+            "stuff_code": "NRkTs",
+            "stuff_name": "flow_draft",
+            "concept": {
+                "code": "FlowDraft",
+                "domain": "builder",
+                "description": "Draft of the flow of the pipeline.",
+                "structure_class_name": "TextContent",
+                "refines": null
+            },
+            "content": {
+                "text": "# Homework Solver Pipeline Structure\n\n## Pipeline Initial Inputs\n- `homework_photo` (HomeworkPhoto, refines Image)\n\n---\n\n## Main Pipeline: homework_solver_sequence\n**# This is the main orchestrator pipe for the entire homework solving workflow**\n\n**Type:** PipeSequence\n\n**Description:** Complete homework solving pipeline that extracts content from a photo, structures questions, solves them, and compiles a final document\n\n**Inputs:**\n- `homework_photo`: HomeworkPhoto\n\n**Output:** HomeworkSolutionsDocument\n\n**Result:** `homework_solutions_document`\n\n**Steps:**\n1. pipe: `extract_homework_content`, result: `homework_analysis`\n2. pipe: `structure_questions`, result: `structured_questions`\n3. pipe: `solve_all_questions_batch`, result: `question_solutions`\n4. pipe: `compile_final_document`, result: `homework_solutions_document`\n\n---\n\n## Pipe Definitions\n\n### Pipe: extract_homework_content\n\n**Type:** PipeLLM\n\n**Description:** Analyze the homework photo using vision AI to extract all text, identify subject area, list questions, and describe visual elements\n\n**Inputs:**\n- `homework_photo`: HomeworkPhoto\n\n**Output:** HomeworkAnalysis\n\n**Result:** `homework_analysis`\n\n---\n\n### Pipe: structure_questions\n\n**Type:** PipeLLM\n\n**Description:** Parse the extracted homework content into individual structured questions with metadata including question number, subject, and difficulty level\n\n**Inputs:**\n- `homework_analysis`: HomeworkAnalysis\n\n**Output:** StructuredQuestion[]\n\n**Result:** `structured_questions`\n\n---\n\n### Pipe: solve_all_questions_batch\n\n**Type:** PipeBatch\n\n**Description:** Apply the solution process to each structured question concurrently\n\n**Inputs:**\n- `structured_questions`: StructuredQuestion[]\n- `homework_analysis`: HomeworkAnalysis\n\n**Output:** QuestionSolution[]\n\n**Result:** `question_solutions`\n\n**Input List Name:** `structured_questions`\n\n**Input Item Name:** `structured_question`\n\n**Branch Pipe Code:** `solve_single_question`\n\n---\n\n### Pipe: solve_single_question\n\n**Type:** PipeLLM\n\n**Description:** Generate a comprehensive step-by-step solution for a single question including reasoning, calculations, explanations, final answer, concept explanation, and memory tips\n\n**Inputs:**\n- `structured_question`: StructuredQuestion\n- `homework_analysis`: HomeworkAnalysis\n\n**Output:** QuestionSolution\n\n**Result:** `question_solution`\n\n---\n\n### Pipe: compile_final_document\n\n**Type:** PipeLLM\n\n**Description:** Compile all solutions into a complete homework solutions document with subject identification, question count, organized solutions, study notes, and recommended learning resources\n\n**Inputs:**\n- `homework_analysis`: HomeworkAnalysis\n- `structured_questions`: StructuredQuestion[]\n- `question_solutions`: QuestionSolution[]\n\n**Output:** HomeworkSolutionsDocument\n\n**Result:** `homework_solutions_document`\n\n---\n\n## Variables Recap\n\n| Variable Name | Description | Concept | Multiplicity | Refines |\n|---------------|-------------|---------|--------------|---------|\n| `homework_photo` | Input photo of homework | HomeworkPhoto | Single | Image |\n| `homework_analysis` | Extracted and analyzed homework content | HomeworkAnalysis | Single | Text |\n| `structured_questions` | List of parsed individual questions | StructuredQuestion | Multiple [] | Text |\n| `structured_question` | Single question item in batch | StructuredQuestion | Single | Text |\n| `question_solutions` | List of all question solutions | QuestionSolution | Multiple [] | Text |\n| `question_solution` | Single question solution | QuestionSolution | Single | Text |\n| `homework_solutions_document` | Final compiled solutions document | HomeworkSolutionsDocument | Single | Text |"
+            }
+        },
+        "prepared_flow": {
+            "stuff_code": "JvyDp",
+            "stuff_name": "prepared_flow",
+            "concept": {
+                "code": "FlowDraft",
+                "domain": "builder",
+                "description": "Draft of the flow of the pipeline.",
+                "structure_class_name": "TextContent",
+                "refines": null
+            },
+            "content": {
+                "text": "# Flow Review\n\nLet me narrate the flow step by step:\n\n1. **Input**: The system receives a `homework_photo` (HomeworkPhoto concept that refines Image)\n\n2. **Step 1 - Extract Content**: The `extract_homework_content` pipe uses vision AI to analyze the photo and produces `homework_analysis` (HomeworkAnalysis), which contains extracted text, subject identification, questions list, and visual element descriptions\n\n3. **Step 2 - Structure Questions**: The `structure_questions` pipe takes the `homework_analysis` and parses it into individual `structured_questions` (StructuredQuestion[]), assigning question numbers, subjects, and difficulty levels\n\n4. **Step 3 - Solve Questions**: The `solve_all_questions_batch` pipe processes each question in parallel using `solve_single_question` for each item, producing `question_solutions` (QuestionSolution[])\n\n5. **Step 4 - Compile Document**: The `compile_final_document` pipe takes all the analysis, structured questions, and solutions to create the final `homework_solutions_document` (HomeworkSolutionsDocument)\n\n6. **Output**: The complete homework solutions document\n\n## Consistency Check:\n\n\u2705 **Main pipe exists and is appropriate**: `homework_solver_sequence` orchestrates the entire workflow as required\n\n\u2705 **Main pipe inputs are consistent**: It only requires `homework_photo` as input, which matches the brief's input requirement\n\n\u2705 **No self-referential inputs**: The main pipe doesn't require any variables that it's supposed to generate\n\n\u2705 **Batching is correct**: The `solve_all_questions_batch` properly batches over `structured_questions` list\n\n\u2705 **Variable names and flow**: All variables are properly named and flow logically from one step to the next\n\n\u2705 **No PipeImgGen issues**: There are no image generation pipes in this flow\n\n\u2705 **All brief requirements covered**: Vision extraction, question structuring, detailed solutions, and final document compilation are all present\n\n**The flow has been checked and is consistent:**\n\n```\n# Homework Solver Pipeline Structure\n\n## Pipeline Initial Inputs\n- `homework_photo` (HomeworkPhoto, refines Image)\n\n---\n\n## Main Pipeline: homework_solver_sequence\n**# This is the main orchestrator pipe for the entire homework solving workflow**\n\n**Type:** PipeSequence\n\n**Description:** Complete homework solving pipeline that extracts content from a photo, structures questions, solves them, and compiles a final document\n\n**Inputs:**\n- `homework_photo`: HomeworkPhoto\n\n**Output:** HomeworkSolutionsDocument\n\n**Result:** `homework_solutions_document`\n\n**Steps:**\n1. pipe: `extract_homework_content`, result: `homework_analysis`\n2. pipe: `structure_questions`, result: `structured_questions`\n3. pipe: `solve_all_questions_batch`, result: `question_solutions`\n4. pipe: `compile_final_document`, result: `homework_solutions_document`\n\n---\n\n## Pipe Definitions\n\n### Pipe: extract_homework_content\n\n**Type:** PipeLLM\n\n**Description:** Analyze the homework photo using vision AI to extract all text, identify subject area, list questions, and describe visual elements\n\n**Inputs:**\n- `homework_photo`: HomeworkPhoto\n\n**Output:** HomeworkAnalysis\n\n**Result:** `homework_analysis`\n\n---\n\n### Pipe: structure_questions\n\n**Type:** PipeLLM\n\n**Description:** Parse the extracted homework content into individual structured questions with metadata including question number, subject, and difficulty level\n\n**Inputs:**\n- `homework_analysis`: HomeworkAnalysis\n\n**Output:** StructuredQuestion[]\n\n**Result:** `structured_questions`\n\n---\n\n### Pipe: solve_all_questions_batch\n\n**Type:** PipeBatch\n\n**Description:** Apply the solution process to each structured question concurrently\n\n**Inputs:**\n- `structured_questions`: StructuredQuestion[]\n- `homework_analysis`: HomeworkAnalysis\n\n**Output:** QuestionSolution[]\n\n**Result:** `question_solutions`\n\n**Input List Name:** `structured_questions`\n\n**Input Item Name:** `structured_question`\n\n**Branch Pipe Code:** `solve_single_question`\n\n---\n\n### Pipe: solve_single_question\n\n**Type:** PipeLLM\n\n**Description:** Generate a comprehensive step-by-step solution for a single question including reasoning, calculations, explanations, final answer, concept explanation, and memory tips\n\n**Inputs:**\n- `structured_question`: StructuredQuestion\n- `homework_analysis`: HomeworkAnalysis\n\n**Output:** QuestionSolution\n\n**Result:** `question_solution`\n\n---\n\n### Pipe: compile_final_document\n\n**Type:** PipeLLM\n\n**Description:** Compile all solutions into a complete homework solutions document with subject identification, question count, organized solutions, study notes, and recommended learning resources\n\n**Inputs:**\n- `homework_analysis`: HomeworkAnalysis\n- `structured_questions`: StructuredQuestion[]\n- `question_solutions`: QuestionSolution[]\n\n**Output:** HomeworkSolutionsDocument\n\n**Result:** `homework_solutions_document`\n\n---\n\n## Variables Recap\n\n| Variable Name | Description | Concept | Multiplicity | Refines |\n|---------------|-------------|---------|--------------|---------|\n| `homework_photo` | Input photo of homework | HomeworkPhoto | Single | Image |\n| `homework_analysis` | Extracted and analyzed homework content | HomeworkAnalysis | Single | Text |\n| `structured_questions` | List of parsed individual questions | StructuredQuestion | Multiple [] | Text |\n| `structured_question` | Single question item in batch | StructuredQuestion | Single | Text |\n| `question_solutions` | List of all question solutions | QuestionSolution | Multiple [] | Text |\n| `question_solution` | Single question solution | QuestionSolution | Single | Text |\n| `homework_solutions_document` | Final compiled solutions document | HomeworkSolutionsDocument | Single | Text |\n```"
+            }
+        },
+        "pipe_signatures": {
+            "stuff_code": "8iSxQ",
+            "stuff_name": "pipe_signatures",
+            "concept": {
+                "code": "PipeSignature",
+                "domain": "pipe_design",
+                "description": "A pipe contract which says what the pipe does, not how it does it: code (the pipe code in snake_case), type, description, inputs, output.",
+                "structure_class_name": "PipeSignature",
+                "refines": null
+            },
+            "content": {
+                "items": [
+                    {
+                        "code": "homework_solver_sequence",
+                        "type": "PipeSequence",
+                        "pipe_category": "PipeController",
+                        "description": "Main orchestrator for the complete homework solving workflow that extracts content from a homework photo, structures questions, solves them in detail, and compiles a final comprehensive solutions document",
+                        "inputs": {
+                            "homework_photo": "HomeworkPhoto"
+                        },
+                        "result": "homework_solutions_document",
+                        "output": "HomeworkSolutionsDocument",
+                        "pipe_dependencies": [
+                            "extract_homework_content",
+                            "structure_questions",
+                            "solve_all_questions_batch",
+                            "compile_final_document"
+                        ]
+                    },
+                    {
+                        "code": "extract_homework_content",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Analyze the homework photo using vision AI to extract all text, identify subject area, list questions, and describe visual elements",
+                        "inputs": {
+                            "homework_photo": "HomeworkPhoto"
+                        },
+                        "result": "homework_analysis",
+                        "output": "HomeworkAnalysis",
+                        "pipe_dependencies": []
+                    },
+                    {
+                        "code": "structure_questions",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Parse the extracted homework content into individual structured questions with metadata including question number, subject, and difficulty level",
+                        "inputs": {
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "result": "structured_questions",
+                        "output": "StructuredQuestion[]",
+                        "pipe_dependencies": []
+                    },
+                    {
+                        "code": "solve_all_questions_batch",
+                        "type": "PipeBatch",
+                        "pipe_category": "PipeController",
+                        "description": "Apply the solution process to each structured question concurrently to generate comprehensive solutions",
+                        "inputs": {
+                            "structured_questions": "StructuredQuestion[]",
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "result": "question_solutions",
+                        "output": "QuestionSolution[]",
+                        "pipe_dependencies": [
+                            "solve_single_question"
+                        ]
+                    },
+                    {
+                        "code": "solve_single_question",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Generate a comprehensive step-by-step solution for a single question including reasoning, calculations, explanations, final answer, concept explanation, and memory tips",
+                        "inputs": {
+                            "structured_question": "StructuredQuestion",
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "result": "question_solution",
+                        "output": "QuestionSolution",
+                        "pipe_dependencies": []
+                    },
+                    {
+                        "code": "compile_final_document",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Compile all solutions into a complete homework solutions document with subject identification, question count, organized solutions, study notes, and recommended learning resources",
+                        "inputs": {
+                            "homework_analysis": "HomeworkAnalysis",
+                            "structured_questions": "StructuredQuestion[]",
+                            "question_solutions": "QuestionSolution[]"
+                        },
+                        "result": "homework_solutions_document",
+                        "output": "HomeworkSolutionsDocument",
+                        "pipe_dependencies": []
+                    }
+                ]
+            }
+        },
+        "bundle_header_spec": {
+            "stuff_code": "NLz5B",
+            "stuff_name": "bundle_header_spec",
+            "concept": {
+                "code": "BundleHeaderSpec",
+                "domain": "builder",
+                "description": "A domain information object.",
+                "structure_class_name": "BundleHeaderSpec",
+                "refines": null
+            },
+            "content": {
+                "domain": "homework_solving",
+                "description": "Solving homework problems from photos with step-by-step solutions and study resources",
+                "system_prompt": null,
+                "main_pipe": "homework_solver_sequence"
+            }
+        },
+        "pipe_specs": {
+            "stuff_code": "85fYh",
+            "stuff_name": "pipe_specs",
+            "concept": {
+                "code": "Anything",
+                "domain": "native",
+                "description": "Anything",
+                "structure_class_name": "AnythingContent",
+                "refines": null
+            },
+            "content": {
+                "items": [
+                    {
+                        "pipe_code": "homework_solver_sequence",
+                        "type": "PipeSequence",
+                        "pipe_category": "PipeController",
+                        "description": "Main orchestrator for the complete homework solving workflow that extracts content from a homework photo, structures questions, solves them in detail, and compiles a final comprehensive solutions document",
+                        "inputs": {
+                            "homework_photo": "HomeworkPhoto"
+                        },
+                        "output": "HomeworkSolutionsDocument",
+                        "steps": [
+                            {
+                                "pipe_code": "extract_homework_content",
+                                "result": "homework_analysis"
+                            },
+                            {
+                                "pipe_code": "structure_questions",
+                                "result": "structured_questions"
+                            },
+                            {
+                                "pipe_code": "solve_all_questions_batch",
+                                "result": "question_solutions"
+                            },
+                            {
+                                "pipe_code": "compile_final_document",
+                                "result": "homework_solutions_document"
+                            }
+                        ]
+                    },
+                    {
+                        "pipe_code": "extract_homework_content",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Analyze the homework photo using vision AI to extract all text, identify subject area, list questions, and describe visual elements",
+                        "inputs": {
+                            "homework_photo": "HomeworkPhoto"
+                        },
+                        "output": "HomeworkAnalysis",
+                        "llm_skill": "llm_for_visual_analysis",
+                        "system_prompt": "You are an expert at analyzing homework photos and extracting structured information. Your task is to carefully examine the image and produce a structured HomeworkAnalysis object.",
+                        "prompt": "Analyze this homework photo and extract all relevant information:\n\n$homework_photo\n\nPlease carefully examine the image and identify:\n- All text content visible in the homework\n- The academic subject area (e.g., mathematics, science, history, etc.)\n- All questions or problems present\n- Any diagrams, charts, graphs, or other visual elements"
+                    },
+                    {
+                        "pipe_code": "structure_questions",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Parse the extracted homework content into individual structured questions with metadata including question number, subject, and difficulty level",
+                        "inputs": {
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "output": "StructuredQuestion[]",
+                        "llm_skill": "llm_to_answer_easy_questions",
+                        "system_prompt": "You are a homework analysis assistant. Your task is to parse extracted homework content and structure it into individual questions with metadata. You will generate a structured list of questions.",
+                        "prompt": "Parse the following homework analysis into individual structured questions.\n\n@homework_analysis\n\nFor each question or problem identified in the homework:\n- Assign a clear question number or identifier\n- Extract the complete question text\n- Identify the specific subject area\n- Estimate the difficulty level (e.g., easy, medium, hard)\n\nGenerate a structured list of all questions found in the homework."
+                    },
+                    {
+                        "pipe_code": "solve_all_questions_batch",
+                        "type": "PipeBatch",
+                        "pipe_category": "PipeController",
+                        "description": "Apply the solution process to each structured question concurrently to generate comprehensive solutions",
+                        "inputs": {
+                            "structured_questions": "StructuredQuestion[]",
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "output": "QuestionSolution[]",
+                        "branch_pipe_code": "solve_single_question",
+                        "input_list_name": "structured_questions",
+                        "input_item_name": "structured_question"
+                    },
+                    {
+                        "pipe_code": "solve_single_question",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Generate a comprehensive step-by-step solution for a single question including reasoning, calculations, explanations, final answer, concept explanation, and memory tips",
+                        "inputs": {
+                            "structured_question": "StructuredQuestion",
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "output": "QuestionSolution",
+                        "llm_skill": "llm_to_answer_hard_questions",
+                        "system_prompt": "You are an expert tutor who provides comprehensive, step-by-step solutions to homework questions. Your goal is to help students understand not just the answer, but the reasoning and concepts behind it. You will generate a structured solution for the given question.",
+                        "prompt": "You are solving a homework question from the subject area: $subject_area\n\nHere is the question to solve:\n\nQuestion #$question_number\nSubject: $subject\nDifficulty: $difficulty_level\nQuestion: $question_text\n\nContext from the homework:\n@extracted_text\n\nProvide a comprehensive solution for this question. Show all your work, explain your reasoning clearly, and help the student understand the underlying concepts."
+                    },
+                    {
+                        "pipe_code": "compile_final_document",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Compile all solutions into a complete homework solutions document with subject identification, question count, organized solutions, study notes, and recommended learning resources",
+                        "inputs": {
+                            "homework_analysis": "HomeworkAnalysis",
+                            "structured_questions": "StructuredQuestion[]",
+                            "question_solutions": "QuestionSolution[]"
+                        },
+                        "output": "HomeworkSolutionsDocument",
+                        "llm_skill": "llm_to_answer_easy_questions",
+                        "system_prompt": "You are a homework solutions compiler. Your task is to create a comprehensive, well-organized homework solutions document from the provided analysis, questions, and solutions. Generate a structured HomeworkSolutionsDocument object.",
+                        "prompt": "Compile a complete homework solutions document based on the following information:\n\n@homework_analysis\n\n@structured_questions\n\n@question_solutions\n\nCreate a comprehensive document that includes:\n- The primary subject area\n- Total count of questions\n- All solutions organized in a clear, easy-to-follow format\n- General study notes that help understand the overall topic\n- Recommended learning resources (YouTube channels, websites, etc.) for further study"
+                    }
+                ]
+            }
+        },
+        "pipelex_bundle_spec": {
+            "stuff_code": "BoG2h",
+            "stuff_name": "pipelex_bundle_spec",
+            "concept": {
+                "code": "PipelexBundleSpec",
+                "domain": "builder",
+                "description": "A Pipelex bundle spec.",
+                "structure_class_name": "PipelexBundleSpec",
+                "refines": null
+            },
+            "content": {
+                "domain": "homework_solving",
+                "description": "Solving homework problems from photos with step-by-step solutions and study resources",
+                "system_prompt": null,
+                "main_pipe": "homework_solver_sequence",
+                "concept": {
+                    "HomeworkPhoto": {
+                        "the_concept_code": "HomeworkPhoto",
+                        "description": "A photo of homework content",
+                        "structure": null,
+                        "refines": "Image"
+                    },
+                    "HomeworkAnalysis": {
+                        "the_concept_code": "HomeworkAnalysis",
+                        "description": "Structured extraction of homework content from a photo",
+                        "structure": {
+                            "extracted_text": {
+                                "the_field_name": "extracted_text",
+                                "description": "All text content extracted from the homework photo",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "subject_area": {
+                                "the_field_name": "subject_area",
+                                "description": "The academic subject area identified (e.g., math, science, history)",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "raw_questions_list": {
+                                "the_field_name": "raw_questions_list",
+                                "description": "List of all questions or problems found in the homework",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "visual_elements_description": {
+                                "the_field_name": "visual_elements_description",
+                                "description": "Description of any diagrams, charts, or visual elements present",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    },
+                    "StructuredQuestion": {
+                        "the_concept_code": "StructuredQuestion",
+                        "description": "A parsed individual question with metadata",
+                        "structure": {
+                            "question_number": {
+                                "the_field_name": "question_number",
+                                "description": "The assigned number or identifier for the question",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "question_text": {
+                                "the_field_name": "question_text",
+                                "description": "The full text of the question or problem",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "subject": {
+                                "the_field_name": "subject",
+                                "description": "The subject area for this specific question",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "difficulty_level": {
+                                "the_field_name": "difficulty_level",
+                                "description": "Estimated difficulty level of the question",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    },
+                    "QuestionSolution": {
+                        "the_concept_code": "QuestionSolution",
+                        "description": "Comprehensive solution for a single question",
+                        "structure": {
+                            "question_number": {
+                                "the_field_name": "question_number",
+                                "description": "The question number this solution corresponds to",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "step_by_step_reasoning": {
+                                "the_field_name": "step_by_step_reasoning",
+                                "description": "Detailed reasoning for each step of the solution",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "calculations": {
+                                "the_field_name": "calculations",
+                                "description": "All mathematical calculations shown",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            },
+                            "explanations": {
+                                "the_field_name": "explanations",
+                                "description": "Clear explanations in simple language",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "final_answer": {
+                                "the_field_name": "final_answer",
+                                "description": "The final answer to the question, highlighted",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "concept_explanation": {
+                                "the_field_name": "concept_explanation",
+                                "description": "Additional explanation of underlying concepts",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            },
+                            "memory_tips": {
+                                "the_field_name": "memory_tips",
+                                "description": "Helpful tips to remember the concept or approach",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    },
+                    "HomeworkSolutionsDocument": {
+                        "the_concept_code": "HomeworkSolutionsDocument",
+                        "description": "Complete compiled homework solutions document",
+                        "structure": {
+                            "subject": {
+                                "the_field_name": "subject",
+                                "description": "The primary subject area of the homework",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "total_questions": {
+                                "the_field_name": "total_questions",
+                                "description": "Total count of questions solved",
+                                "type": "integer",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "organized_solutions": {
+                                "the_field_name": "organized_solutions",
+                                "description": "All solutions organized and formatted",
+                                "type": "text",
+                                "required": true,
+                                "default_value": null
+                            },
+                            "study_notes": {
+                                "the_field_name": "study_notes",
+                                "description": "General study notes for the topic",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            },
+                            "recommended_resources": {
+                                "the_field_name": "recommended_resources",
+                                "description": "Recommended learning resources including YouTube channels and websites",
+                                "type": "text",
+                                "required": false,
+                                "default_value": null
+                            }
+                        },
+                        "refines": null
+                    }
+                },
+                "pipe": {
+                    "homework_solver_sequence": {
+                        "pipe_code": "homework_solver_sequence",
+                        "type": "PipeSequence",
+                        "pipe_category": "PipeController",
+                        "description": "Main orchestrator for the complete homework solving workflow that extracts content from a homework photo, structures questions, solves them in detail, and compiles a final comprehensive solutions document",
+                        "inputs": {
+                            "homework_photo": "HomeworkPhoto"
+                        },
+                        "output": "HomeworkSolutionsDocument",
+                        "steps": [
+                            {
+                                "pipe_code": "extract_homework_content",
+                                "result": "homework_analysis"
+                            },
+                            {
+                                "pipe_code": "structure_questions",
+                                "result": "structured_questions"
+                            },
+                            {
+                                "pipe_code": "solve_all_questions_batch",
+                                "result": "question_solutions"
+                            },
+                            {
+                                "pipe_code": "compile_final_document",
+                                "result": "homework_solutions_document"
+                            }
+                        ]
+                    },
+                    "extract_homework_content": {
+                        "pipe_code": "extract_homework_content",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Analyze the homework photo using vision AI to extract all text, identify subject area, list questions, and describe visual elements",
+                        "inputs": {
+                            "homework_photo": "HomeworkPhoto"
+                        },
+                        "output": "HomeworkAnalysis",
+                        "llm_skill": "llm_for_visual_analysis",
+                        "system_prompt": "You are an expert at analyzing homework photos and extracting structured information. Your task is to carefully examine the image and produce a structured HomeworkAnalysis object.",
+                        "prompt": "Analyze this homework photo and extract all relevant information:\n\n$homework_photo\n\nPlease carefully examine the image and identify:\n- All text content visible in the homework\n- The academic subject area (e.g., mathematics, science, history, etc.)\n- All questions or problems present\n- Any diagrams, charts, graphs, or other visual elements"
+                    },
+                    "structure_questions": {
+                        "pipe_code": "structure_questions",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Parse the extracted homework content into individual structured questions with metadata including question number, subject, and difficulty level",
+                        "inputs": {
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "output": "StructuredQuestion[]",
+                        "llm_skill": "llm_to_answer_easy_questions",
+                        "system_prompt": "You are a homework analysis assistant. Your task is to parse extracted homework content and structure it into individual questions with metadata. You will generate a structured list of questions.",
+                        "prompt": "Parse the following homework analysis into individual structured questions.\n\n@homework_analysis\n\nFor each question or problem identified in the homework:\n- Assign a clear question number or identifier\n- Extract the complete question text\n- Identify the specific subject area\n- Estimate the difficulty level (e.g., easy, medium, hard)\n\nGenerate a structured list of all questions found in the homework."
+                    },
+                    "solve_all_questions_batch": {
+                        "pipe_code": "solve_all_questions_batch",
+                        "type": "PipeBatch",
+                        "pipe_category": "PipeController",
+                        "description": "Apply the solution process to each structured question concurrently to generate comprehensive solutions",
+                        "inputs": {
+                            "structured_questions": "StructuredQuestion[]",
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "output": "QuestionSolution[]",
+                        "branch_pipe_code": "solve_single_question",
+                        "input_list_name": "structured_questions",
+                        "input_item_name": "structured_question"
+                    },
+                    "solve_single_question": {
+                        "pipe_code": "solve_single_question",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Generate a comprehensive step-by-step solution for a single question including reasoning, calculations, explanations, final answer, concept explanation, and memory tips",
+                        "inputs": {
+                            "structured_question": "StructuredQuestion",
+                            "homework_analysis": "HomeworkAnalysis"
+                        },
+                        "output": "QuestionSolution",
+                        "llm_skill": "llm_to_answer_hard_questions",
+                        "system_prompt": "You are an expert tutor who provides comprehensive, step-by-step solutions to homework questions. Your goal is to help students understand not just the answer, but the reasoning and concepts behind it. You will generate a structured solution for the given question.",
+                        "prompt": "You are solving a homework question from the subject area: $subject_area\n\nHere is the question to solve:\n\nQuestion #$question_number\nSubject: $subject\nDifficulty: $difficulty_level\nQuestion: $question_text\n\nContext from the homework:\n@extracted_text\n\nProvide a comprehensive solution for this question. Show all your work, explain your reasoning clearly, and help the student understand the underlying concepts."
+                    },
+                    "compile_final_document": {
+                        "pipe_code": "compile_final_document",
+                        "type": "PipeLLM",
+                        "pipe_category": "PipeOperator",
+                        "description": "Compile all solutions into a complete homework solutions document with subject identification, question count, organized solutions, study notes, and recommended learning resources",
+                        "inputs": {
+                            "homework_analysis": "HomeworkAnalysis",
+                            "structured_questions": "StructuredQuestion[]",
+                            "question_solutions": "QuestionSolution[]"
+                        },
+                        "output": "HomeworkSolutionsDocument",
+                        "llm_skill": "llm_to_answer_easy_questions",
+                        "system_prompt": "You are a homework solutions compiler. Your task is to create a comprehensive, well-organized homework solutions document from the provided analysis, questions, and solutions. Generate a structured HomeworkSolutionsDocument object.",
+                        "prompt": "Compile a complete homework solutions document based on the following information:\n\n@homework_analysis\n\n@structured_questions\n\n@question_solutions\n\nCreate a comprehensive document that includes:\n- The primary subject area\n- Total count of questions\n- All solutions organized in a clear, easy-to-follow format\n- General study notes that help understand the overall topic\n- Recommended learning resources (YouTube channels, websites, etc.) for further study"
+                    }
+                }
+            }
+        }
+    },
+    "aliases": {
+        "main_stuff": "pipelex_bundle_spec"
+    }
+}
